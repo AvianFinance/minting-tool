@@ -1,0 +1,23 @@
+{
+  "name": "minting-tool",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AvianFinance/minting-tool.git"
+  },
+  "author": "MB",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AvianFinance/minting-tool/issues"
+  },
+  "homepage": "https://github.com/AvianFinance/minting-tool#readme",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^2.0.1",
+    "hardhat": "^2.12.6"
+  }
+}
