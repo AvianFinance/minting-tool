@@ -3,11 +3,14 @@ const fs = require('fs');
 const { deploy_general,deploy_rental } = require('./deploy/deploy_contract')
 const { mintGeneralNFT,mintRentableNFT } = require('./scripts/mint')
 const { uploadToPinata } = require('./services/pinata_upload')
+const FormData = require('form-data');
 
 const prompt = require('prompt-sync')();
 
 const provider = new ethers.providers.JsonRpcProvider("https://api.avax-test.network/ext/bc/C/rpc")
 const signer_m = new ethers.Wallet("7e0dd21cba3952c769b9a90376893a351d4ac356aeacd0e537f5022e08593528", provider); // Meelan Credentials
+const signer_r = new ethers.Wallet("2f3b47319ba27e3e58ae7a62ecb3966b23b9df1b8a12d1b7520f643a6d7fdc33", provider); // Meelan Credentials
+const signer_i = new ethers.Wallet("986815db062b75efa84cd38ea93e08e9e13a42ee9493f756c1bc661d06201e68", provider); // Meelan Credentials
 
 async function main(){
 
@@ -29,12 +32,13 @@ async function main(){
     
             let name = prompt('Name of the collection?');
             let symbol = prompt('symbol of the collection?');
+            let index = prompt('signer to use');
     
             if (cond == 1){
-                const addr = await deploy_general(signer_m,String(name),String(symbol))
+                const addr = await deploy_general(getSignerfromindex(index),String(name),String(symbol))
                 console.log(addr)
             } else if (cond==2){
-                const aadr = await deploy_rental(signer_m,String(name),String(symbol))
+                const addr = await deploy_rental(getSignerfromindex(index),String(name),String(symbol))
                 console.log(addr)
             }
     
@@ -47,6 +51,8 @@ async function main(){
             const img_name = "lion.jpg"
     
             const image = fs.readFileSync(`./${img_name}`);
+
+            console.log(image)
     
             console.log("Image Uploading to Pinata...")
     
@@ -54,8 +60,11 @@ async function main(){
 
             let nft_name = prompt('Name of the NFT?');
             let nft_desc = prompt('symbol of the NFT?');
+
+            const formData = new FormData()
+            formData.append('file', image, img_name)
     
-            const ipfsHash = await uploadToPinata(image, img_name, tokenCounter, nft_name, nft_desc)
+            const ipfsHash = await uploadToPinata(formData, tokenCounter, nft_name, nft_desc)
     
             console.log(await mintGeneralNFT(token_address,ipfsHash,signer_m))
     
@@ -66,6 +75,17 @@ async function main(){
     
     }
 
+}
+
+function getSignerfromindex(index){
+    if (index==1){
+        return signer_m
+    }
+    else if (index==2){
+        return signer_r
+    }else if (index==3){
+        return signer_i
+    }
 }
 
 
